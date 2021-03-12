@@ -1,11 +1,11 @@
 <template>
   <div class="login-container">
     <el-row class="login-form">
-      <el-col :md="10" class="login-form_left hidden-md-and-down"> </el-col>
+      <el-col :span="10" class="login-form_left hidden-md-and-down"> </el-col>
       <el-col :md="24" :lg="14" :xl="14" class="login-form_right">
-        <h1>注册</h1>
+        <h1>{{ isLogin?'登录':'注册' }}</h1>
         <p class="login-link">
-          已经有账号？点击<el-link type="primary">登录</el-link>
+          {{ isLogin?'还没账号？赶紧去注册一个吧！':'已经有账号？点击' }}<el-button class="link-btn" type="text" @click="hadnleChangeLink">{{ isLogin?"注册":'登录' }}</el-button>
         </p>
 
         <el-form
@@ -26,7 +26,7 @@
               autocomplete="off"
             ></el-input>
           </el-form-item>
-          <el-form-item label="确认密码" prop="confirmPassword">
+          <el-form-item label="确认密码" prop="confirmPassword" v-if="!isLogin">
             <el-input
               type="password"
               v-model="loginForm.confirmPassword"
@@ -35,8 +35,14 @@
             ></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button :loading='isBtnLoading' type="primary" @click="submitForm">立即注册</el-button>
-            <el-button @click="resetForm">重置</el-button>
+            <template v-if="!isLogin">
+              <el-button :loading='isBtnLoading' type="primary" @click="submitForm">立即注册</el-button>
+              <el-button @click="resetForm">重置</el-button>
+            </template>
+            <template v-else>
+              <el-button :loading='isBtnLoading' type="primary" @click="submitForm">登录</el-button>
+              <el-button :loading='isBtnLoading' type="warning" @click="submitForm">忘记密码</el-button>
+            </template>
           </el-form-item>
           <el-form-item>
             <el-checkbox v-model="loginForm.isRead">我已经阅读并同意《相关协议》</el-checkbox>
@@ -93,6 +99,7 @@ export default {
         isRead:false
       },
       isBtnLoading:false,
+      isLogin:false,
       // 表单验证规则
       loginRules: {
         email: [
@@ -108,6 +115,11 @@ export default {
       },
     });
 
+
+    // 注册登录切换
+    const hadnleChangeLink = ()=>{
+      loginState.isLogin  = !loginState.isLogin
+    }
     // 处理注册
     const submitForm = () => {
       loginRuleForm.value.validate((valid: any) => {
@@ -134,7 +146,8 @@ export default {
       ...toRefs(loginState),
       loginRuleForm,
       submitForm,
-      resetForm
+      resetForm,
+      hadnleChangeLink
     };
   },
 };
@@ -164,7 +177,7 @@ export default {
       .login-link {
         color: #ccc;
         margin-bottom: 30px;
-        a {
+        .link-btn {
           margin-left: 10px;
           font-size: 16px;
         }
