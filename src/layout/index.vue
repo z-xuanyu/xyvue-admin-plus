@@ -1,3 +1,12 @@
+<!--
+ * @Author: xuanyu
+ * @LastEditors: xuanyu
+ * @email: 969718197@qq.com
+ * @github: https://github.com/z-xuanyu
+ * @Date: 2021-03-12 11:29:03
+ * @LastEditTime: 2021-05-25 10:28:29
+ * @Description: Modify here please
+-->
 <template>
   <div class="layout-container">
       <!-- 顶部导航 -->
@@ -6,23 +15,32 @@
       <!-- 主体部分 -->
       <div class="layout-content">
         <navbar-top></navbar-top>
-        <!-- <keep-alive v-if='$route.meta.keepAlive'>
-          <router-view></router-view>
-        </keep-alive> -->
-        <router-view></router-view>
+        <router-view v-slot='{ Component  }'>
+          <component :is="Component" />
+        </router-view>
       </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
 import SidebarMenu  from './components/Sidebar.vue';
-import NavbarTop from './components/NavBarTop.vue'
+import NavbarTop from './components/NavBarTop.vue';
+import { useRoute } from 'vue-router'
 export default defineComponent({
   name:"Layout",
   components:{
     SidebarMenu,
     NavbarTop
+  },
+  setup(){
+    const key = computed(()=>{
+      return new Date();
+    })
+    console.log(new Date().toTimeString())
+    return{
+      key
+    }
   }
 })
 </script>
